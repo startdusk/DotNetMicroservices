@@ -34,6 +34,8 @@ namespace PlatformService
             services.AddScoped<IPlatformRepo, PlatformRepo>();
 
             services.AddControllers();
+            // AutoMapper 也可以在指定的程序集中扫描从 Profile 继承的类
+            // 扫描当前程序集获取继承了Profile的类的映射关系
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddSwaggerGen(c =>
             {

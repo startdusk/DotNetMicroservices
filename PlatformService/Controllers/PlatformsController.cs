@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using PlatformService.Data;
+using PlatformService.Models;
 using PlatformService.Dtos;
 
 namespace PlatformService.Controllers
@@ -29,6 +30,29 @@ namespace PlatformService.Controllers
 
             var platforms = _repository.GetAllPlatforms();
             return Ok(value: _mapper.Map<IEnumerable<PlatformReadDto>>(platforms));
+        }
+
+        [HttpGet("{id}", Name = "GetPlatformById")]
+        public ActionResult<PlatformReadDto> GetPlatformById(int id)
+        {
+            var platformItem = _repository.GetPlatformById(id);
+            if (platformItem == null)
+            {
+                return NotFound();
+            }
+            return Ok(_mapper.Map<PlatformReadDto>(platformItem));
+        }
+
+        [HttpPost]
+        public ActionResult<PlatformReadDto> CreatePlatform(PlatformCreateDto platformCreateDto)
+        {
+            var platformModel = _mapper.Map<Platform>(platformCreateDto);
+            _repository.CreatePlatform(platformModel);
+            _repository.SaveChanges();
+
+            var platformReadDto = _mapper.Map<PlatformReadDto>(platformModel);
+            // HATEOAS API 在header返回可以发现的请求路由
+            return CreatedAtRoute(nameof(GetPlatformById), new { Id = platformReadDto.Id }, platformReadDto);
         }
     }
 }

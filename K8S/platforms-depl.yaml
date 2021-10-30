@@ -1,0 +1,18 @@
+apiVersion: app/v1
+kind: Deployment
+metadata:
+  name: platforms-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: platformservice
+  template:
+    metadata: 
+      labels:
+        app: platformservice
+    spec:
+      container:
+        - name: platformservice
+          image: benjamin5611/platformservice:latest
+
